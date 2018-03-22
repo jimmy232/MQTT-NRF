@@ -3,6 +3,7 @@
 #include <sstream>
 #include <unistd.h>
 #include <RF24/RF24.h>
+#include <mosquitto.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -55,24 +56,92 @@ void runMQTT()
 	sw2 = 1 << 9;
 	bool sw1Stat = sw1 & data.command;
 	bool sw2Stat = sw2 & data.command;
-	char command[200] ;
-	sprintf(command, "mosquitto_pub -h 10.0.0.74 -t MyHomeJC/OUT/Slave/%d/SwitchOne -m %d\n", data.macAddr, sw1Stat);
-	system(command);
-	sprintf(command, "mosquitto_pub -h 10.0.0.74 -t MyHomeJC/OUT/Slave/%d/SwitchTwo -m %d\n", data.macAddr, sw2Stat);
-	system(command);
-	sprintf(command, "mosquitto_pub -h 10.0.0.74 -t MyHomeJC/OUT/Slave/%d/volts -m %lu\n", data.macAddr, data.volts);
-	system(command);
-	sprintf(command, "mosquitto_pub -h 10.0.0.74 -t MyHomeJC/OUT/Slave/%d/amps -m %lu\n", data.macAddr, data.amps);
-	system(command);
-	sprintf(command, "mosquitto_pub -h 10.0.0.74 -t MyHomeJC/OUT/Slave/%d/watts -m %lu\n", data.macAddr, data.watts);
-	system(command);
-	sprintf(command, "mosquitto_pub -h 10.0.0.74 -t MyHomeJC/OUT/Slave/%d/kwh -m %lu\n", data.macAddr, data.kwh);
-	system(command);
+	char topic[200] ;
+	//sprintf(command, "mosquitto_pub -h 10.0.0.74 -t MyHomeJC/OUT/Slave/%d/SwitchOne -m %d\n", data.macAddr, sw1Stat);
+	sprintf(topic, "MyHomeJC/OUT/Slave/%d/SwitchOne", data.macAddr);
+	mqtt_send(topic, sw1Stat);
+	sprintf(topic, "MyHomeJC/OUT/Slave/%d/SwitchOne", data.macAddr);
+	mqtt_send(topic, sw2Stat);
+	sprintf(topic, "MyHomeJC/OUT/Slave/%d/volts", data.macAddr);
+	mqtt_send(topic, data.volts);
+	sprintf(topic, "MyHomeJC/OUT/Slave/%d/amps", data.macAddr);
+	mqtt_send(topic, data.amps);
+	sprintf(topic, "MyHomeJC/OUT/Slave/%d/watts", data.macAddr);
+	mqtt_send(topic, data.watts);
+	sprintf(topic, "MyHomeJC/OUT/Slave/%d/kwh", data.macAddr);
+	mqtt_send(topic, data.kwh);
+// 	system(command);
+// 	sprintf(command, "mosquitto_pub -h 10.0.0.74 -t MyHomeJC/OUT/Slave/%d/SwitchTwo -m %d\n", data.macAddr, sw2Stat);
+// 	system(command);
+// 	sprintf(command, "mosquitto_pub -h 10.0.0.74 -t MyHomeJC/OUT/Slave/%d/volts -m %lu\n", data.macAddr, data.volts);
+// 	system(command);
+// 	sprintf(command, "mosquitto_pub -h 10.0.0.74 -t MyHomeJC/OUT/Slave/%d/amps -m %lu\n", data.macAddr, data.amps);
+// 	system(command);
+// 	sprintf(command, "mosquitto_pub -h 10.0.0.74 -t MyHomeJC/OUT/Slave/%d/watts -m %lu\n", data.macAddr, data.watts);
+// 	system(command);
+// 	sprintf(command, "mosquitto_pub -h 10.0.0.74 -t MyHomeJC/OUT/Slave/%d/kwh -m %lu\n", data.macAddr, data.kwh);
+// 	system(command);
+	
+	
 }
+
+//*****************************************************************
+//                           MQTT Publish 
+//*****************************************************************
+void mosq_log_callback(struct mosquitto *mosq, void *userdata, int level, const char *str)
+{
+        /* Pring all log messages regardless of level. */
+
+  switch(level){
+    //case MOSQ_LOG_DEBUG:
+    //case MOSQ_LOG_INFO:
+    //case MOSQ_LOG_NOTICE:
+    case MOSQ_LOG_WARNING:
+    case MOSQ_LOG_ERR: {
+      printf("%i:%s\n", level, str);
+    }
+  }
+}
+
+struct mosquitto *mosq = NULL;
+char *topic = NULL;
+void mqtt_setup(){
+
+        char *host = "10.0.0.74";
+        int port = 1883;
+        int keepalive = 60;
+        bool clean_session = true;
+  	//topic = "Hello";
+
+  mosquitto_lib_init();
+  mosq = mosquitto_new(NULL, clean_session, NULL);
+  if(!mosq){
+                fprintf(stderr, "Error: Out of memory.\n");
+                exit(1);
+        }
+
+  mosquitto_log_callback_set(mosq, mosq_log_callback);
+
+  if(mosquitto_connect(mosq, host, port, keepalive)){
+                fprintf(stderr, "Unable to connect.\n");
+                exit(1);
+        }
+  int loop = mosquitto_loop_start(mosq);
+  if(loop != MOSQ_ERR_SUCCESS){
+    fprintf(stderr, "Unable to start loop: %i\n", loop);
+    exit(1);
+  }
+}
+
+int mqtt_send(char *msg, char *topic){
+  return mosquitto_publish(mosq, NULL, topic, strlen(msg), msg, 0, 0);
+}
+
 
 
 int main(int argc, char** argv)
 {
+	mqtt_setup();
 	
 	radio.begin();
 	radio.setRetries(15,15);
