@@ -6,16 +6,6 @@
 
 using namespace std;
 
-#define OBSTACLE_PIN 13
-
-#define ADDRESS     "172.20.10.2:1883"
-#define CLIENTID    "ExampleClientPub"
-#define TOPIC       "MyHomeJC"
-#define PAYLOAD     _txBuffer1
-#define QOS         1
-#define TIMEOUT     10000L
-
-
 RF24 radio(RPI_V2_GPIO_P1_22, RPI_V2_GPIO_P1_24, BCM2835_SPI_SPEED_8MHZ);
 
 
