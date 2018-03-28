@@ -4,37 +4,40 @@
 #include <string.h>
 
 #include <mosquitto.h>
+#include "MQTTSub.h"
 
 #define mqtt_host "localhost"
 #define mqtt_port 1883
 
 static int run = 1;
 
+static int run = 1;
+
 void handle_signal(int s)
 {
-        run = 0;
+	run = 0;
 }
 
 void connect_callback(struct mosquitto *mosq, void *obj, int result)
 {
-        printf("connect callback, rc=%d\n", result);
+	printf("connect callback, rc=%d\n", result);
 }
 
-void message_callback(struct mosquitto *mosq, void *obj, const struct mosquitto$
+void message_callback(struct mosquitto *mosq, void *obj, const struct mosquitto_message *message)
 {
-        bool match = 0;
-        printf("got message '%.*s' for topic '%s'\n", message->payloadlen, (cha$
+	bool match = 0;
+	printf("got message '%.*s' for topic '%s'\n", message->payloadlen, (char*) message->payload, message->topic);
 
-        mosquitto_topic_matches_sub("hello/world/+", message->topic, &match);
-        if (match) {
-                printf("got message for ADC topic\n");
-        }
+	mosquitto_topic_matches_sub("/devices/wb-adc/controls/+", message->topic, &match);
+	if (match) {
+		printf("got message for ADC topic\n");
+	}
 
 }
-
-int main(int argc, char *argv[])
+									    
+int mqtt_subscribe()
 {
-        uint8_t reconnect = true;
+	uint8_t reconnect = true;
         char clientid[24];
         struct mosquitto *mosq;
         int rc = 0;
@@ -69,27 +72,6 @@ int main(int argc, char *argv[])
 
         mosquitto_lib_cleanup();
 
-        return rc;
+        return rc;	
+	
 }
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
