@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <RF24/RF24.h>
 #include "MQTTPub.h"
+#include "MQTTSub.h"
 
 
 using namespace std;
