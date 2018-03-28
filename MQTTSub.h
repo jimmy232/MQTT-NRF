@@ -2,13 +2,10 @@
 extern "C" {
 #endif
 
-void mosq_log_callback(struct mosquitto *mosq, void *userdata, int level, const char *str);
-
-int mqtt_send(char *msg);
-
-void mqtt_setup();
-
-
+void connect_callback(struct mosquitto *mosq, void *obj, int result);
+void message_callback(struct mosquitto *mosq, void *obj, const struct mosquitto_message *message);
+mqtt_subscribe();
+  
 #ifdef __cplusplus
 } // closing brace for extern "C"
 
