@@ -83,6 +83,7 @@ int main(int argc, char** argv)
 {
         printf("RUNNING");
         mqtt_setup();
+	mqtt_subscribe();
 
         radio.begin();
         radio.setRetries(15,15);
