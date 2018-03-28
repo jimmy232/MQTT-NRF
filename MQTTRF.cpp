@@ -3,10 +3,6 @@
 #include <sstream>
 #include <unistd.h>
 #include <RF24/RF24.h>
-#include <mosquitto.h>
-
-#include <stdio.h>
-#include <stdlib.h>
 
 using namespace std;
 
@@ -19,7 +15,6 @@ using namespace std;
 #define QOS         1
 #define TIMEOUT     10000L
 
-int mqtt_send(char *msg, char *topic);
 
 RF24 radio(RPI_V2_GPIO_P1_22, RPI_V2_GPIO_P1_24, BCM2835_SPI_SPEED_8MHZ);
 
@@ -86,57 +81,6 @@ void runMQTT()
 	
 }
 
-//*****************************************************************
-//                           MQTT Publish 
-//*****************************************************************
-void mosq_log_callback(struct mosquitto *mosq, void *userdata, int level, const char *str)
-{
-        /* Pring all log messages regardless of level. */
-
-  switch(level){
-    //case MOSQ_LOG_DEBUG:
-    //case MOSQ_LOG_INFO:
-    //case MOSQ_LOG_NOTICE:
-    case MOSQ_LOG_WARNING:
-    case MOSQ_LOG_ERR: {
-      printf("%i:%s\n", level, str);
-    }
-  }
-}
-
-struct mosquitto *mosq = NULL;
-char *topic = NULL;
-void mqtt_setup(){
-
-        char *host = "10.0.0.74";
-        int port = 1883;
-        int keepalive = 60;
-        bool clean_session = true;
-  	//topic = "Hello";
-
-  mosquitto_lib_init();
-  mosq = mosquitto_new(NULL, clean_session, NULL);
-  if(!mosq){
-                fprintf(stderr, "Error: Out of memory.\n");
-                exit(1);
-        }
-
-  mosquitto_log_callback_set(mosq, mosq_log_callback);
-
-  if(mosquitto_connect(mosq, host, port, keepalive)){
-                fprintf(stderr, "Unable to connect.\n");
-                exit(1);
-        }
-  int loop = mosquitto_loop_start(mosq);
-  if(loop != MOSQ_ERR_SUCCESS){
-    fprintf(stderr, "Unable to start loop: %i\n", loop);
-    exit(1);
-  }
-}
-
-int mqtt_send(char *msg, char *topic){
-  return mosquitto_publish(mosq, NULL, topic, strlen(msg), msg, 0, 0);
-}
 
 
 
