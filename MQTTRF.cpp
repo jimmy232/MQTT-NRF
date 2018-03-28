@@ -19,6 +19,7 @@ using namespace std;
 #define QOS         1
 #define TIMEOUT     10000L
 
+int mqtt_send(char *msg, char *topic);
 
 RF24 radio(RPI_V2_GPIO_P1_22, RPI_V2_GPIO_P1_24, BCM2835_SPI_SPEED_8MHZ);
 
