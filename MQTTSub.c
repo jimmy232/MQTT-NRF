@@ -5,7 +5,6 @@
 
 #include <mosquitto.h>
 #include "MQTTSub.h"
-#include "MQTTPub.h"
 
 #define mqtt_host "localhost"
 #define mqtt_port 1883
