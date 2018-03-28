@@ -31,36 +31,36 @@ struct package
 void func(struct package *newData)
 {
         printf("\n");
-        printf("command2: %d \n", newData->command);
-        printf("macAddr2: %d \n", newData->macAddr);
-        printf("Volts2: %lu \n", newData->volts);
-        printf("Amps2: %lu \n", newData->amps);
-        printf("Watts2: %lu \n", newData->watts);
-        printf("kwh2: %lu \n", newData->kwh);
+        printf("command: %d \n", newData->command);
+        printf("macAddr: %d \n", newData->macAddr);
+        printf("Volts: %lu \n", newData->volts);
+        printf("Amps: %lu \n", newData->amps);
+        printf("Watts: %lu \n", newData->watts);
+        printf("kwh: %lu \n", newData->kwh);
 }
 
 void runMQTT()
 {
-//      int sw1 = 0;
-//      sw1 = 1 << 8;
-//      int sw2 = 0;
-//      sw2 = 1 << 9;
-//      bool sw1Stat = sw1 & data.command;
-//      bool sw2Stat = sw2 & data.command;
-        char topic[200] ;
-        //sprintf(command, "mosquitto_pub -h 10.0.0.74 -t MyHomeJC/OUT/Slave/%d/SwitchOne -m %d\n", data.macAddr, sw1Stat);
-        sprintf(topic, "MyHomeJC/OUT/Slave/%d/SwitchOne", data.macAddr);
-        //mqtt_send(topic, sw1Stat);
-        sprintf(topic, "MyHomeJC/OUT/Slave/%d/SwitchOne", data.macAddr);
-        //mqtt_send(topic, sw2Stat);
-        sprintf(topic, "MyHomeJC/OUT/Slave/%d/volts", data.macAddr);
-        //mqtt_send(topic, data.volts);
-        sprintf(topic, "MyHomeJC/OUT/Slave/%d/amps", data.macAddr);
-	//mqtt_send(topic, data.amps);
+	int sw1 = 0;
+	sw1 = 1 << 8;
+	int sw2 = 0;
+	sw2 = 1 << 9;
+	bool sw1Stat = sw1 & data.command;
+	bool sw2Stat = sw2 & data.command;
+	char topic[200] ;
+	//sprintf(command, "mosquitto_pub -h 10.0.0.74 -t MyHomeJC/OUT/Slave/%d/SwitchOne -m %d\n", data.macAddr, sw1Stat);
+	sprintf(topic, "MyHomeJC/OUT/Slave/%d/SwitchOne", data.macAddr);
+	mqtt_send(topic, sw1Stat);
+	sprintf(topic, "MyHomeJC/OUT/Slave/%d/SwitchOne", data.macAddr);
+	mqtt_send(topic, sw2Stat);
+	sprintf(topic, "MyHomeJC/OUT/Slave/%d/volts", data.macAddr);
+	mqtt_send(topic, data.volts);
+	sprintf(topic, "MyHomeJC/OUT/Slave/%d/amps", data.macAddr);
+	mqtt_send(topic, data.amps);
 	sprintf(topic, "MyHomeJC/OUT/Slave/%d/watts", data.macAddr);
-        //mqtt_send(topic, data.watts);
-        sprintf(topic, "MyHomeJC/OUT/Slave/%d/kwh", data.macAddr);
-        //mqtt_send(topic, data.kwh);
+	mqtt_send(topic, data.watts);
+	sprintf(topic, "MyHomeJC/OUT/Slave/%d/kwh", data.macAddr);
+	mqtt_send(topic, data.kwh);
 //      system(command);
 //      sprintf(command, "mosquitto_pub -h 10.0.0.74 -t MyHomeJC/OUT/Slave/%d/SwitchTwo -m %d\n", data.macAddr, sw2Stat);
 //      system(command);
