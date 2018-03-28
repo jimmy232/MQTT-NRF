@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include "MQTTPub.h"
 
 void mosq_log_callback(struct mosquitto *mosq, void *userdata, int level, const char *str)
 {
