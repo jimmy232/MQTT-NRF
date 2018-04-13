@@ -3,4 +3,4 @@
 RPI comms project
 
 //Install the follow libs
-sudo apt-get install libmosquitto0-dev libmosquittopp0-dev
+sudo apt-get install libmosquitto-dev libmosquittopp-dev
