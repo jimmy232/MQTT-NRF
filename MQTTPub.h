@@ -3,7 +3,7 @@ extern "C" {
 #endif
 
 void mosq_log_callback(struct mosquitto *mosq, void *userdata, int level, const char *str);
-int mqtt_send(char *msg);
+int mqtt_send(char *topic, char *msg);
 void mqtt_setup();
 
 
@@ -11,4 +11,3 @@ void mqtt_setup();
 } // closing brace for extern "C"
 
 #endif
-
