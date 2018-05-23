@@ -1,7 +1,3 @@
-/*
-  needs libmosquitto-dev
-  $ gcc -o libmosq libmosq.c -lmosquitto
-*/
 #include <stdio.h>
 #include <mosquitto.h>
 #include <stdlib.h>
@@ -25,25 +21,27 @@ void mosq_log_callback(struct mosquitto *mosq, void *userdata, int level, const 
 }
 
 struct mosquitto *mosq = NULL;
-char *topic = NULL;
+char *myTopic = NULL;
 void mqtt_setup(){
 
-        char *host = "172.20.10.2";
+
+        printf("MQTT-SETUP\n");
+        char *host = "localhost";
         int port = 1883;
         int keepalive = 60;
         bool clean_session = true;
-  topic = "Hello";
+        //myTopic = "Hello";
 
   mosquitto_lib_init();
   mosq = mosquitto_new(NULL, clean_session, NULL);
   if(!mosq){
-                fprintf(stderr, "Error: Out of memory.\n");
+               fprintf(stderr, "Error: Out of memory.\n");
                 exit(1);
         }
 
   mosquitto_log_callback_set(mosq, mosq_log_callback);
 
-  if(mosquitto_connect(mosq, host, port, keepalive)){
+ if(mosquitto_connect(mosq, host, port, keepalive)){
                 fprintf(stderr, "Unable to connect.\n");
                 exit(1);
         }
@@ -54,23 +52,6 @@ void mqtt_setup(){
   }
 }
 
-int mqtt_send(char *msg){
-  return mosquitto_publish(mosq, NULL, topic, strlen(msg), msg, 0, 0);
+int mqtt_send(char *myTopic, char *msg){
+  return mosquitto_publish(mosq, NULL, myTopic, strlen(msg), msg, 0, 0);
 }
-
-int main(int argc, char *argv[])
-{
-  mqtt_setup();
-  char *buf = malloc(64);
-  while(1){
-    sprintf(buf,"Davina");
-    int snd = mqtt_send(buf);
-    if(snd != 0) printf("mqtt_send error=%i\n", snd);
-    usleep(100000);
-  }
-}
-
-
-
-
-
