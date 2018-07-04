@@ -57,19 +57,19 @@ void runMQTT()
         msg2 = &sw2Stat;
 		
 		 //sprintf(command, "mosquitto_pub -h 10.0.0.74 -t MyHomeJC/OUT/Slave/%d/SwitchOne -m %d\n", data.macAddr, sw1Stat);
-        sprintf(topic, "MyHomeJC/OUT/Slave/Command/%d", data.macAddr);
+        sprintf(topic, "ProLighting/OUT/Slave/Command/%d", data.macAddr);
         sprintf(msg, "%d", data.command);
         mqtt_send(topic, msg);
-        sprintf(topic, "MyHomeJC/OUT/Slave/volts/%d", data.macAddr);
+        sprintf(topic, "ProLighting/OUT/Slave/volts/%d", data.macAddr);
         sprintf(msg, "%ul", data.volts);
         mqtt_send(topic, msg);
-        sprintf(topic, "MyHomeJC/OUT/Slave/amps/%d", data.macAddr);
+        sprintf(topic, "ProLighting/OUT/Slave/amps/%d", data.macAddr);
         sprintf(msg, "%ul", data.amps);
         mqtt_send(topic, msg);
-        sprintf(topic, "MyHomeJC/OUT/Slave/watts/%d", data.macAddr);
+        sprintf(topic, "ProLighting/OUT/Slave/watts/%d", data.macAddr);
         sprintf(msg, "%ul", data.watts);
         mqtt_send(topic, msg);
-        sprintf(topic, "MyHomeJC/OUT/Slave/kwh/%d", data.macAddr);
+        sprintf(topic, "ProLighting/OUT/Slave/kwh/%d", data.macAddr);
         sprintf(msg, "%ul", data.kwh);
         mqtt_send(topic, msg);
 
@@ -94,7 +94,7 @@ void message_callback(struct mosquitto *mosqSub, void *obj, const struct mosquit
         bool match = 0;
 //        printf("got message '%.*s' for topic '%s'\n", message->payloadlen, (char*) message->payload, message->topic);
 
-        mosquitto_topic_matches_sub("MyHomeJC/Slave/CMD/#", message->topic, &match);
+        mosquitto_topic_matches_sub("ProLighting/Slave/CMD/#", message->topic, &match);
         if (match) {
 //                printf("%s\n", message->topic);
 //                printf("Message: %s\n", (char*) message->payload );
