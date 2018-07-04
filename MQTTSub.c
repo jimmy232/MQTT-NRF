@@ -64,7 +64,7 @@ struct mosquitto *mqtt_subscribe()
 
             rc = mosquitto_connect(mosqSub, mqtt_host, mqtt_port, 60);
 
-                mosquitto_subscribe(mosqSub, NULL, "MyHomeJC/Slave/CMD/#", 0);
+                mosquitto_subscribe(mosqSub, NULL, "ProLighting/Slave/CMD/#", 0);
 
 //                while(run){
 //                      printf("Running Subscribe 3..\n");
